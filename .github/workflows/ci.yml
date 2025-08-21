@@ -35,21 +35,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Run unit tests
-        run: npm run test:unit -- --coverage
-
+      - run: npm ci
+      - run: npm run test:unit -- --coverage
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
@@ -61,23 +53,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+      - run: npm ci
 
-      - name: Install deps
-        run: npm ci
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
 
-      - name: Build app
-        run: npm run build
-
-      - name: Run E2E tests
-        run: npm run test:e2e
+      - name: Run Cypress E2E tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm run dev
+          wait-on: "http://localhost:5173"
+          wait-on-timeout: 120
 
       - name: Upload Cypress videos
         if: always()
@@ -96,7 +92,7 @@ jobs:
   build:
     name: Build app
     runs-on: ubuntu-latest
-    needs: [lint-typecheck, unit-tests, e2e-tests] # ← ждёт пока пройдут тесты
+    needs: [lint-typecheck, unit-tests, e2e-tests]
 
     steps:
       - name: Checkout repo
