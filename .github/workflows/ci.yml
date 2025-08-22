@@ -49,17 +49,15 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      # ⚡ теперь E2E тесты гоняются на собранном билде (serve dist),
-      # а не на dev-сервере → ближе к продакшену
+      # ⚡ E2E тесты гоняются на собранном билде (serve dist)
       - name: Run Cypress E2E tests
-  uses: cypress-io/github-action@v6
-  env:
-    CYPRESS_BASE_URL: http://localhost:4173
-  with:
-    start: npx serve -s dist -l 4173
-    wait-on: "http://127.0.0.1:4173"
-    wait-on-timeout: 120
-
+        uses: cypress-io/github-action@v6
+        env:
+          CYPRESS_BASE_URL: http://localhost:4173
+        with:
+          start: npx serve -s dist -l 4173
+          wait-on: "http://127.0.0.1:4173"
+          wait-on-timeout: 120
 
       - name: Upload Cypress videos
         if: always()
