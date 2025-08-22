@@ -1,0 +1,23 @@
+.wrap {
+  display: grid;
+  gap: 0.35rem;
+}
+.label {
+  font-weight: 600;
+}
+.input {
+  border: 1px solid #ddd;
+  border-radius: var(--radius);
+  padding: 0.6rem;
+}
+.input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+.error {
+  border-color: red;
+}
+.hint {
+  color: red;
+  font-size: 0.85rem;
+}
