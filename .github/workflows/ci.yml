@@ -98,3 +98,24 @@ jobs:
           tags: |
             faralex5/ci-stuff:sha-${{ github.sha }}
             faralex5/ci-stuff:${{ github.ref_name }}
+
+  storybook:
+    name: Deploy Storybook
+    runs-on: ubuntu-latest
+    needs: [lint-typecheck, unit-tests] # ⬅️ деплоим только если тесты прошли
+    if: github.ref == 'refs/heads/main' # ⬅️ только при пуше в main
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build-storybook
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: storybook-static
