@@ -1,10 +1,25 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+// src/main.tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+async function prepare() {
+  if (import.meta.env.VITE_MOCK_ENABLED === "true") {
+    const { worker } = await import("./shared/mocks/browser");
+    await worker.start({
+      serviceWorker: { url: "/mockServiceWorker.js" },
+      onUnhandledRequest: "bypass",
+    });
+    console.log("✅ MSW is running with mocks");
+  } else {
+    console.log("🚀 MSW is disabled, using real API");
+  }
+}
+
+prepare().then(() => {
+  ReactDOM.createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+});

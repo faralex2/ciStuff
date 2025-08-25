@@ -1,0 +1,7 @@
+{
+  "profile": { "id": 1, "name": "Alex", "role": "middle-frontend" },
+  "orders": [
+    { "id": 1, "title": "Шампунь", "status": "delivered" },
+    { "id": 2, "title": "Крем", "status": "pending" }
+  ]
+}
