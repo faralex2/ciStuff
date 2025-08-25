@@ -6,10 +6,14 @@ type Order = {
   status: string;
 };
 
+type OrderDetails = Order & {
+  price: number;
+};
+
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [details, setDetails] = useState<any | null>(null);
+  const [details, setDetails] = useState<OrderDetails | null>(null);
 
   // Загружаем список заказов
   useEffect(() => {
